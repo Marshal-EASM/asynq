@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hibiken/asynq"
+	"github.com/Marshal-EASM/asynq"
 	"golang.org/x/sys/unix"
 )
 

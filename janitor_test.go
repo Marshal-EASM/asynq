@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Marshal-EASM/asynq/internal/base"
+	"github.com/Marshal-EASM/asynq/internal/rdb"
+	h "github.com/Marshal-EASM/asynq/internal/testutil"
 	"github.com/google/go-cmp/cmp"
-	"github.com/hibiken/asynq/internal/base"
-	"github.com/hibiken/asynq/internal/rdb"
-	h "github.com/hibiken/asynq/internal/testutil"
 )
 
 func newCompletedTask(qname, tasktype string, payload []byte, completedAt time.Time) *base.TaskMessage {

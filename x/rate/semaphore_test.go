@@ -8,11 +8,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Marshal-EASM/asynq"
+	"github.com/Marshal-EASM/asynq/internal/base"
+	asynqcontext "github.com/Marshal-EASM/asynq/internal/context"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
-	"github.com/hibiken/asynq"
-	"github.com/hibiken/asynq/internal/base"
-	asynqcontext "github.com/hibiken/asynq/internal/context"
 )
 
 var (
