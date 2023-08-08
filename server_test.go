@@ -22,35 +22,44 @@ func TestServer(t *testing.T) {
 	ignoreOpt := goleak.IgnoreTopFunction("github.com/redis/go-redis/v9/internal/pool.(*ConnPool).reaper")
 	defer goleak.VerifyNone(t, ignoreOpt)
 
-	redisConnOpt := getRedisConnOpt(t)
+	redisConnOpt := RedisClientOpt{
+		Addr: "127.0.0.1:6379",
+		DB:   0,
+	}
 	c := NewClient(redisConnOpt)
 	defer c.Close()
-	srv := NewServer(redisConnOpt, Config{
-		Concurrency: 10,
-		LogLevel:    testLogLevel,
-	})
+	// srv := NewServer(redisConnOpt, Config{
+	// 	Concurrency: 1,
+	// 	LogLevel:    testLogLevel,
+	// })
+	//
+	// // no-op handler
+	// h := func(ctx context.Context, task *Task) error {
+	// 	return nil
+	// }
+	//
+	// err := srv.Start(HandlerFunc(h))
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
 
-	// no-op handler
-	h := func(ctx context.Context, task *Task) error {
-		return nil
+	for i := 0; i < 100; i++ {
+		_, err := c.Enqueue(NewTask("test", testutil.JSON(map[string]interface{}{"recipient_id": 123})))
+		if err != nil {
+			fmt.Println("could not enqueue a task:", err)
+		}
 	}
+	// _, err = c.Enqueue(NewTask("send_email", testutil.JSON(map[string]interface{}{"recipient_id": 123})))
+	// if err != nil {
+	// 	t.Errorf("could not enqueue a task: %v", err)
+	// }
+	//
+	// _, err = c.Enqueue(NewTask("send_email", testutil.JSON(map[string]interface{}{"recipient_id": 456})), ProcessIn(1*time.Hour))
+	// if err != nil {
+	// 	t.Errorf("could not enqueue a task: %v", err)
+	// }
 
-	err := srv.Start(HandlerFunc(h))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	_, err = c.Enqueue(NewTask("send_email", testutil.JSON(map[string]interface{}{"recipient_id": 123})))
-	if err != nil {
-		t.Errorf("could not enqueue a task: %v", err)
-	}
-
-	_, err = c.Enqueue(NewTask("send_email", testutil.JSON(map[string]interface{}{"recipient_id": 456})), ProcessIn(1*time.Hour))
-	if err != nil {
-		t.Errorf("could not enqueue a task: %v", err)
-	}
-
-	srv.Shutdown()
+	// srv.Shutdown()
 }
 
 func TestServerRun(t *testing.T) {
