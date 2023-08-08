@@ -7,6 +7,7 @@ package asynq
 import (
 	"context"
 	"fmt"
+	asynqcontext "github.com/Marshal-EASM/asynq/internal/context"
 	"math"
 	"math/rand"
 	"runtime"
@@ -17,7 +18,6 @@ import (
 	"time"
 
 	"github.com/Marshal-EASM/asynq/internal/base"
-	asynqcontext "github.com/Marshal-EASM/asynq/internal/context"
 	"github.com/Marshal-EASM/asynq/internal/errors"
 	"github.com/Marshal-EASM/asynq/internal/log"
 	"github.com/Marshal-EASM/asynq/internal/timeutil"
@@ -196,7 +196,7 @@ func (p *processor) exec() {
 		go func() {
 			defer func() {
 				p.finished <- msg
-				p.logger.Infof("Finished processing task id=%s type=%q", msg.ID, msg.Type)
+				// p.logger.Infof("Finished processing task id=%s type=%q", msg.ID, msg.Type)
 				<-p.sema // release token
 			}()
 
@@ -204,7 +204,6 @@ func (p *processor) exec() {
 			p.cancelations.Add(msg.ID, cancel)
 			defer func() {
 				cancel()
-				p.logger.Debugf("Canceled task id=%s", msg.ID)
 				p.cancelations.Delete(msg.ID)
 			}()
 
@@ -238,15 +237,16 @@ func (p *processor) exec() {
 				p.logger.Warnf("Quitting worker. task id=%s", msg.ID)
 				p.requeue(lease, msg)
 				return
-			case <-lease.Done():
-				// cancel()
-				p.handleFailedMessage(ctx, lease, msg, ErrLeaseExpired)
-				return
+			// case <-lease.Done():
+			// 	// cancel()
+			// 	p.handleFailedMessage(ctx, lease, msg, ErrLeaseExpired)
+			// 	return
 			case <-ctx.Done():
 				p.handleFailedMessage(ctx, lease, msg, ctx.Err())
 				return
 			case resErr := <-resCh:
 				if resErr != nil {
+					p.logger.Errorf("Handler returned error: %v", resErr)
 					p.handleFailedMessage(ctx, lease, msg, resErr)
 					return
 				}

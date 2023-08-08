@@ -6,7 +6,6 @@ package asynq_test
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -23,13 +22,13 @@ import (
 // }
 func TestExampleServerRun(t *testing.T) {
 	srv := asynq.NewServer(
-		asynq.RedisClientOpt{Addr: "42.192.231.235:36379", Password: "d2bf7126723ea8f6005ba141ea3c3e2c", DB: 0},
+		asynq.RedisClientOpt{Addr: ":6379", DB: 0},
 		asynq.Config{
 			StrictPriority: true,
 			LogLevel:       1,
-			Concurrency:    100,
+			Concurrency:    2,
 			Queues: map[string]int{
-				"marshal-low": 5,
+				"test": 5,
 			},
 		},
 	)
@@ -42,7 +41,7 @@ func TestExampleServerRun(t *testing.T) {
 	// mux.HandleFunc(protocol.PassiveScan, handler.PassiveScan)
 	// mux.HandleFunc(protocol.XssScan, handler.XssScan)
 	// mux.HandleFunc(protocol.JsDetect, handler.JsScan)
-	mux.HandleFunc("webscan", ABC)
+	mux.HandleFunc("test", ABC)
 	// Run blocks and waits for os signal to terminate the program.
 	if err := srv.Run(mux); err != nil {
 		log.Fatal(err)
@@ -59,18 +58,18 @@ type WebScanArg struct {
 func ABC(ctx context.Context, t *asynq.Task) error {
 	fmt.Println("start")
 	defer fmt.Println("end")
-	var d WebScanArg
-	if err := json.Unmarshal(t.Payload(), &d); err != nil {
-		fmt.Println(err)
-	}
-	// time.Sleep(5 * time.Second)
+	// var d WebScanArg
+	// if err := json.Unmarshal(t.Payload(), &d); err != nil {
+	// 	fmt.Println(err)
+	// }
+	time.Sleep(5 * time.Second)
 	return nil
 }
 
 func TestName(t *testing.T) {
-	QueueClient := asynq.NewClient(asynq.RedisClientOpt{Addr: "42.192.231.235:36379", Password: "d2bf7126723ea8f6005ba141ea3c3e2c", DB: 0})
-	for i := 0; i < 1000000; i++ {
-		_, err := QueueClient.Enqueue(asynq.NewTask("Test", nil), asynq.Queue("test"), asynq.MaxRetry(1), asynq.Timeout(60*60*24*30*time.Second))
+	QueueClient := asynq.NewClient(asynq.RedisClientOpt{Addr: ":6379", DB: 0})
+	for i := 0; i < 10; i++ {
+		_, err := QueueClient.Enqueue(asynq.NewTask("test", nil), asynq.Queue("test"), asynq.MaxRetry(1), asynq.Timeout(60*60*24*30*time.Second))
 		if err != nil {
 			fmt.Println(err)
 		}
