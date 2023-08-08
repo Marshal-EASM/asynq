@@ -185,6 +185,7 @@ func (p *processor) exec() {
 			if p.errLogLimiter.Allow() {
 				p.logger.Errorf("Dequeue error: %v", err)
 			}
+			p.logger.Errorf("broker Dequeue error: %v", err)
 			<-p.sema // release token
 			return
 		}
@@ -195,6 +196,7 @@ func (p *processor) exec() {
 		go func() {
 			defer func() {
 				p.finished <- msg
+				p.logger.Infof("Finished processing task id=%s type=%q", msg.ID, msg.Type)
 				<-p.sema // release token
 			}()
 
@@ -202,6 +204,7 @@ func (p *processor) exec() {
 			p.cancelations.Add(msg.ID, cancel)
 			defer func() {
 				cancel()
+				p.logger.Debugf("Canceled task id=%s", msg.ID)
 				p.cancelations.Delete(msg.ID)
 			}()
 
