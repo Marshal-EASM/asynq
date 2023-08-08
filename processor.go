@@ -236,7 +236,7 @@ func (p *processor) exec() {
 				p.requeue(lease, msg)
 				return
 			case <-lease.Done():
-				cancel()
+				// cancel()
 				p.handleFailedMessage(ctx, lease, msg, ErrLeaseExpired)
 				return
 			case <-ctx.Done():
