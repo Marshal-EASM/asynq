@@ -13,17 +13,18 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/hibiken/asynq/internal/base"
-	"github.com/hibiken/asynq/internal/errors"
-	"github.com/hibiken/asynq/internal/timeutil"
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/cast"
+
+	"github.com/Marshal-EASM/asynq/internal/base"
+	"github.com/Marshal-EASM/asynq/internal/errors"
+	"github.com/Marshal-EASM/asynq/internal/timeutil"
 )
 
 const statsTTL = 90 * 24 * time.Hour // 90 days
 
 // LeaseDuration is the duration used to initially create a lease and to extend it thereafter.
-const LeaseDuration = 30 * time.Second
+const LeaseDuration = 24 * time.Hour
 
 // RDB is a client interface to query and mutate task queues.
 type RDB struct {

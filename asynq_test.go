@@ -11,16 +11,16 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/redis/go-redis/v9"
+	"github.com/Marshal-EASM/asynq/internal/log"
+	h "github.com/Marshal-EASM/asynq/internal/testutil"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/hibiken/asynq/internal/log"
-	h "github.com/hibiken/asynq/internal/testutil"
+	"github.com/redis/go-redis/v9"
 )
 
-//============================================================================
+// ============================================================================
 // This file defines helper functions and variables used in other test files.
-//============================================================================
+// ============================================================================
 
 // variables used for package testing.
 var (

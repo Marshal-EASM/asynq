@@ -16,12 +16,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hibiken/asynq/internal/base"
-	asynqcontext "github.com/hibiken/asynq/internal/context"
-	"github.com/hibiken/asynq/internal/errors"
-	"github.com/hibiken/asynq/internal/log"
-	"github.com/hibiken/asynq/internal/timeutil"
+	asynqcontext "github.com/Marshal-EASM/asynq/internal/context"
+
 	"golang.org/x/time/rate"
+
+	"github.com/Marshal-EASM/asynq/internal/base"
+	"github.com/Marshal-EASM/asynq/internal/errors"
+	"github.com/Marshal-EASM/asynq/internal/log"
+	"github.com/Marshal-EASM/asynq/internal/timeutil"
 )
 
 type processor struct {
@@ -189,6 +191,7 @@ func (p *processor) exec() {
 			if p.errLogLimiter.Allow() {
 				p.logger.Errorf("Dequeue error: %v", err)
 			}
+			p.logger.Errorf("broker Dequeue error: %v", err)
 			<-p.sema // release token
 			return
 		}
@@ -199,6 +202,7 @@ func (p *processor) exec() {
 		go func() {
 			defer func() {
 				p.finished <- msg
+				// p.logger.Infof("Finished processing task id=%s type=%q", msg.ID, msg.Type)
 				<-p.sema // release token
 			}()
 
@@ -248,6 +252,7 @@ func (p *processor) exec() {
 				return
 			case resErr := <-resCh:
 				if resErr != nil {
+					p.logger.Errorf("Handler returned error: %v", resErr)
 					p.handleFailedMessage(ctx, lease, msg, resErr)
 					return
 				}

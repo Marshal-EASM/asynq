@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hibiken/asynq"
-	asynqcontext "github.com/hibiken/asynq/internal/context"
-	"github.com/redis/go-redis/v9"
+	"github.com/Marshal-EASM/asynq"
+	asynqcontext "github.com/Marshal-EASM/asynq/internal/context"
+	"github.com/go-redis/redis/v8"
 )
 
 // NewSemaphore creates a counting Semaphore for the given scope with the given number of tokens.

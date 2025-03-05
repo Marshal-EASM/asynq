@@ -10,9 +10,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/MakeNowJust/heredoc/v2"
+	"github.com/Marshal-EASM/asynq"
 	"github.com/fatih/color"
-	"github.com/hibiken/asynq"
 	"github.com/spf13/cobra"
 )
 
@@ -770,4 +769,3 @@ func taskRunAll(cmd *cobra.Command, args []string) {
 	}
 	fmt.Printf("%d tasks are now pending\n", n)
 }
-

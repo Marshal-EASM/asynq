@@ -1,10 +1,12 @@
-module github.com/hibiken/asynq
+module github.com/Marshal-EASM/asynq
 
 go 1.22
 
 require (
+	github.com/golang/protobuf v1.5.0
 	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
+	github.com/hibiken/asynq v0.25.1
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/cast v1.7.0

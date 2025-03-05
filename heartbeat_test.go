@@ -10,13 +10,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Marshal-EASM/asynq/internal/base"
+	"github.com/Marshal-EASM/asynq/internal/rdb"
+	"github.com/Marshal-EASM/asynq/internal/testbroker"
+	h "github.com/Marshal-EASM/asynq/internal/testutil"
+	"github.com/Marshal-EASM/asynq/internal/timeutil"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/hibiken/asynq/internal/base"
-	"github.com/hibiken/asynq/internal/rdb"
-	"github.com/hibiken/asynq/internal/testbroker"
-	h "github.com/hibiken/asynq/internal/testutil"
-	"github.com/hibiken/asynq/internal/timeutil"
 )
 
 // Test goes through a few phases.
@@ -186,9 +186,9 @@ func TestHeartbeater(t *testing.T) {
 		hb.host = tc.host
 		hb.pid = tc.pid
 
-		//===================
+		// ===================
 		// Start Phase1
-		//===================
+		// ===================
 
 		srvState.mu.Lock()
 		srvState.value = srvStateActive // simulating Server.Start
@@ -246,9 +246,9 @@ func TestHeartbeater(t *testing.T) {
 			}
 		}
 
-		//===================
+		// ===================
 		// Start Phase2
-		//===================
+		// ===================
 
 		clock.AdvanceTime(tc.elapsedTime)
 		// Simulate processor finished processing tasks.
@@ -268,9 +268,9 @@ func TestHeartbeater(t *testing.T) {
 			}
 		}
 
-		//===================
+		// ===================
 		// Start Phase3
-		//===================
+		// ===================
 
 		// Server state change; simulating Server.Shutdown
 		srvState.mu.Lock()
