@@ -14,13 +14,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Marshal-EASM/asynq/internal/errors"
-	pb "github.com/Marshal-EASM/asynq/internal/proto"
-	"github.com/Marshal-EASM/asynq/internal/timeutil"
-	"github.com/golang/protobuf/ptypes"
 	"github.com/redis/go-redis/v9"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
+
+	"github.com/Marshal-EASM/asynq/internal/errors"
+	pb "github.com/Marshal-EASM/asynq/internal/proto"
+	"github.com/Marshal-EASM/asynq/internal/timeutil"
 )
 
 // Version of asynq library and CLI.

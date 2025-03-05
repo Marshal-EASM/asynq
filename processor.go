@@ -7,7 +7,6 @@ package asynq
 import (
 	"context"
 	"fmt"
-	asynqcontext "github.com/Marshal-EASM/asynq/internal/context"
 	"math"
 	"math/rand/v2"
 	"runtime"
@@ -17,11 +16,14 @@ import (
 	"sync"
 	"time"
 
+	asynqcontext "github.com/Marshal-EASM/asynq/internal/context"
+
+	"golang.org/x/time/rate"
+
 	"github.com/Marshal-EASM/asynq/internal/base"
 	"github.com/Marshal-EASM/asynq/internal/errors"
 	"github.com/Marshal-EASM/asynq/internal/log"
 	"github.com/Marshal-EASM/asynq/internal/timeutil"
-	"golang.org/x/time/rate"
 )
 
 type processor struct {
@@ -241,10 +243,10 @@ func (p *processor) exec() {
 				p.logger.Warnf("Quitting worker. task id=%s", msg.ID)
 				p.requeue(lease, msg)
 				return
-			// case <-lease.Done():
-			// 	// cancel()
-			// 	p.handleFailedMessage(ctx, lease, msg, ErrLeaseExpired)
-			// 	return
+			case <-lease.Done():
+				cancel()
+				p.handleFailedMessage(ctx, lease, msg, ErrLeaseExpired)
+				return
 			case <-ctx.Done():
 				p.handleFailedMessage(ctx, lease, msg, ctx.Err())
 				return
